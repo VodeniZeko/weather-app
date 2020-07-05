@@ -1,64 +1,96 @@
-import React, { useEffect, useState } from "react";
-import "./App.css";
-import axios from "axios";
-import { Button, Card, Modal } from "react-bootstrap";
+import React, { useState } from "react";
+const api = {
+  key: "67b10bbf46e6fecb07c0365d103c7e1f",
+  base: "https://api.openweathermap.org/data/2.5/"
+};
 
-///////
 function App() {
-  //this is what opens a popup//
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  //
-  const [results, setResults] = useState();
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.openweathermap.org/data/2.5/onecall?lat=47.608013&lon=-122.335167&appid=67b10bbf46e6fecb07c0365d103c7e1f"
-      )
-      .then(res => setResults(res.data))
-      .catch(err => console.log(err));
-  }, []);
-  console.log(results);
+  const [query, setQuery] = useState("");
+  const [weather, setWeather] = useState({});
+
+  const search = evt => {
+    if (evt.key === "Enter") {
+      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+        .then(res => res.json())
+        .then(result => {
+          setWeather(result);
+          setQuery("");
+          console.log(result);
+        });
+    }
+  };
+
+  const dateBuilder = d => {
+    let months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    let days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ];
+
+    let day = days[d.getDay()];
+    let date = d.getDate();
+    let month = months[d.getMonth()];
+    let year = d.getFullYear();
+
+    return `${day} ${date} ${month} ${year}`;
+  };
+
   return (
     <div
-      className="App"
-      style={{ display: "flex", flexWrap: "wrap", width: "900px" }}
+      className={
+        typeof weather.main != "undefined"
+          ? weather.main.temp > 16
+            ? "app warm"
+            : "app"
+          : "app"
+      }
     >
-      {!results ? (
-        <div>Loading...</div>
-      ) : (
-        results.daily.map(day => (
-          <Card
-            style={{ width: "18rem", border: "2px solid red", margin: "20px" }}
-          >
-            <Card.Img variant="top" src="holder.js/100px180" />
-            <Card.Body>
-              <Card.Title>Card Title</Card.Title>
-              <Card.Text>
-                <h3></h3>
-              </Card.Text>
-              <Button onClick={handleShow} variant="primary">
-                Go somewhere
-              </Button>
-            </Card.Body>
-          </Card>
-        ))
-      )}
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <main>
+        <div className="search-box">
+          <input
+            type="text"
+            className="search-bar"
+            placeholder="Search..."
+            onChange={e => setQuery(e.target.value)}
+            value={query}
+            onKeyPress={search}
+          />
+        </div>
+        {typeof weather.main != "undefined" ? (
+          <div>
+            <div className="location-box">
+              <div className="location">
+                {weather.name}, {weather.sys.country}
+              </div>
+              <div className="date">{dateBuilder(new Date())}</div>
+            </div>
+            <div className="weather-box">
+              <div className="temp">{Math.round(weather.main.temp)}°c</div>
+              <div className="weather">{weather.weather[0].main}</div>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+      </main>
     </div>
   );
 }
