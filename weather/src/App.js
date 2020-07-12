@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 const api = {
   key: "67b10bbf46e6fecb07c0365d103c7e1f",
   base: "https://api.openweathermap.org/data/2.5/"
@@ -63,10 +64,11 @@ function App() {
           : "app"
       }
     >
-      <main>
+      <main style={{ textAlign: "center", marginTop: "200px" }}>
         <div className="search-box">
           <input
             type="text"
+            style={{ fontSize: "2rem" }}
             className="search-bar"
             placeholder="Search..."
             onChange={e => setQuery(e.target.value)}
