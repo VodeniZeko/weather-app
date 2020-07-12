@@ -3,7 +3,7 @@ const api = {
   key: "67b10bbf46e6fecb07c0365d103c7e1f",
   base: "https://api.openweathermap.org/data/2.5/"
 };
-
+//new code
 function App() {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
