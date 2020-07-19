@@ -4,11 +4,12 @@ import "./App.css";
 import sunny from "./images/sunny.png";
 import cloudy from "./images/cloudy.png";
 import rainy from "./images/rain.png";
+
 const api = {
   key: "67b10bbf46e6fecb07c0365d103c7e1f",
   base: "https://api.openweathermap.org/data/2.5/"
 };
-
+//new code
 function App() {
   const [query, setQuery] = useState("");
   const [weather, setWeather] = useState({});
@@ -101,6 +102,34 @@ function App() {
                   onKeyPress={search}
                 />
                 <span></span>
+
+    <div
+      className={
+        typeof weather.main != "undefined"
+          ? weather.main.temp > 16
+            ? "app warm"
+            : "app"
+          : "app"
+      }
+    >
+      <main style={{ textAlign: "center", marginTop: "200px" }}>
+        <div className="search-box">
+          <input
+            type="text"
+            style={{ fontSize: "2rem" }}
+            className="search-bar"
+            placeholder="Search..."
+            onChange={e => setQuery(e.target.value)}
+            value={query}
+            onKeyPress={search}
+          />
+        </div>
+        {typeof weather.main != "undefined" ? (
+          <div>
+            <div className="location-box">
+              <div className="location">
+                {weather.name}, {weather.sys.country}
+
               </div>
             </div>
           </Card.Text>
