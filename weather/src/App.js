@@ -4,6 +4,12 @@ import "./App.css";
 import sunny from "./images/sunny.png";
 import cloudy from "./images/cloudy.png";
 import rainy from "./images/rain.png";
+import snow from "./images/snow.png";
+import tornado from "./images/tornado.png";
+import thunder from "./images/thunder.png";
+import windy from "./images/windy.png";
+import arrow from "./images/arrow.png";
+import humidity from "./images/humidity.png";
 const api = {
   key: "67b10bbf46e6fecb07c0365d103c7e1f",
   base: "https://api.openweathermap.org/data/2.5/"
@@ -15,7 +21,7 @@ function App() {
 
   const search = evt => {
     if (evt.key === "Enter") {
-      fetch(`${api.base}weather?q=${query}&units=metric&APPID=${api.key}`)
+      fetch(`${api.base}weather?q=${query}&units=imperial&APPID=${api.key}`)
         .then(res => res.json())
         .then(result => {
           setWeather(result);
@@ -61,6 +67,7 @@ function App() {
 
   const weatherStatus =
     typeof weather.main != "undefined" ? weather.weather[0].main : null;
+
   let checkWeather = name => {
     switch (name) {
       case "Clear":
@@ -71,6 +78,18 @@ function App() {
         break;
       case "Rain":
         return rainy;
+        break;
+      case "Snow":
+        return snow;
+        break;
+      case "Thunderstorm":
+        return thunder;
+        break;
+      case "Windy":
+        return windy;
+        break;
+      case "Tornado":
+        return tornado;
         break;
       default:
         return;
@@ -89,21 +108,19 @@ function App() {
       >
         <Card.Body>
           <Card.Title style={{ fontSize: "2rem" }}>Choose a city ?</Card.Title>
-          <Card.Text>
-            <div className="container">
-              <div class="search-box">
-                <input
-                  type="text"
-                  className="search-box"
-                  placeholder="Search..."
-                  onChange={e => setQuery(e.target.value)}
-                  value={query}
-                  onKeyPress={search}
-                />
-                <span></span>
-              </div>
+          <div className="container">
+            <div class="search-box">
+              <input
+                type="text"
+                className="search-box"
+                placeholder="Search..."
+                onChange={e => setQuery(e.target.value)}
+                value={query}
+                onKeyPress={search}
+              />
+              <span></span>
             </div>
-          </Card.Text>
+          </div>
           <Card.Text>
             {typeof weather.main != "undefined" ? (
               <div
@@ -124,8 +141,26 @@ function App() {
                   <div className="date">{dateBuilder(new Date())}</div>
                 </div>
                 <div className="weather-box">
-                  <div className="temp">{Math.round(weather.main.temp)}°c</div>
+                  <div className="temp">
+                    {Math.round(weather.main.temp)}°F | feels like{" "}
+                    {weather.main.feels_like}
+                  </div>
                   <div className="weather">{weather.weather[0].main}</div>
+                  <div>
+                    <img style={{ width: "10px" }} src={arrow} />{" "}
+                    {weather.main.temp_max} °F
+                  </div>
+                  <div>
+                    <img
+                      style={{ width: "10px", transform: "rotate(180deg)" }}
+                      src={arrow}
+                    />{" "}
+                    {weather.main.temp_min} °F
+                  </div>
+                  <div>
+                    <img style={{ width: "30px" }} src={humidity} />
+                    {weather.main.humidity}
+                  </div>
                 </div>
               </div>
             ) : (
